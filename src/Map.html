@@ -1,0 +1,229 @@
+<div id="map"></div>
+
+<style>
+</style>
+
+<script>
+	const serverBase = window.serverBase || '//maps.kosmosnimki.ru/';
+	const apikey = 'PBZU2XXPDM';
+	const sectionsLen = 10;
+	const questionLen = 10;
+	const gameZoom = 3;
+
+	export default {
+		data() {
+			return {
+				quizList: null,
+				questions: null,
+				permalink: null,
+				map: null
+			}
+		},
+		methods: {
+			getSections(arr) {
+				let sections = {};
+				arr.forEach(function(it) {
+					sections[it.properties.SECTION] = true;
+				});
+				let arrSections = Object.keys(sections).sort(() => Math.random() > 0.5 ),
+					len = arrSections.length;
+				sections = {};
+				// console.log('llll', arrSections);
+				for(let i = 0, len1 = len > sectionsLen ? sectionsLen : len; i < len1; i++) {
+					sections[arrSections[i]] = true;
+				}
+				this.set({sectionsList: sections});
+			},
+			reBuildQuestions(sectionsList) {
+				let arr = [],
+					ids = {};
+				this.allData.sort(()=>Math.random() > 0.5).forEach(function(it) {
+					let props = it.properties,
+						id = props.gmx_id,
+						key = props.SECTION;
+					if (!ids[id] && sectionsList[key]) {
+						arr.push(it);
+						ids[id] = true;
+					}
+				});
+				// console.log('reBuildQuestions', arr);
+				this.set({questions: arr.slice(0, questionLen), reBuildQuestions: false});
+			},
+			getQuestion(question) {
+				let {layerID} = this.get();
+
+				this.question = null;
+				let query = 'gmx_id=' + question.properties.gmx_id,
+					url = serverBase + 'rest/ver1/layers/' + layerID + '/search?apikey=' + apikey + '&query=' + query;
+				fetch(url, {mode: 'cors'})
+					.then(function(resp) { return resp.json(); })
+					.then(function(json) {
+						this.question = json.features[0];
+						if (this.needResult) {
+							this.showQuestionResult();
+							this.needResult = false;
+						}
+					}.bind(this));
+
+				this._clearLayers();
+				this.map.setZoom(gameZoom);
+			},
+			getLayerGame(layerID) {
+				let url = serverBase + 'rest/ver1/layers/' + layerID + '/search?apikey=' + apikey + '&columns=[{%22Value%22:%22[gmx_id]%22},{%22Value%22:%22[TITLE]%22},{%22Value%22:%22SECTION%22}]';
+				fetch(url, {mode: 'cors'})
+					.then(function(resp) { return resp.json(); })
+					.then(function(json) {
+						this.allData = json.features;
+					}.bind(this));
+			},
+			showQuestionResult() {
+				// if (this.polyline) { this.map.removeLayer(this.polyline); }
+				let {emotions} = this.get(),
+					item = this.question,
+					layers = L.geoJSON(item.geometry).getLayers(),
+					closestLayer = L.GeometryUtil.closestLayer(this.map, layers, this._latlng),
+					closest = L.GeometryUtil.closest(this.map, closestLayer.layer, this._latlng, false),
+
+					currentLayer = closestLayer.layer,
+					bounds = currentLayer.getBounds(),
+					isContains = bounds.contains(this._latlng),
+					
+					polyline = L.geodesic([[closest, this._latlng]], {color: 'red'}).addTo(this.map);
+
+				this.map.fitBounds(polyline.getBounds());
+				let geoJson = polyline.toGeoJSON().geometry;
+
+				this.currentLayer = currentLayer.addTo(this.map);
+				this.polyline = polyline;
+				let lenM = L.gmxUtil.geoJSONGetLength(geoJson),
+					lenKm = Math.round(lenM / 1000),
+					strLen = L.gmxUtil.getGeoJSONSummary(geoJson),
+					resultQuestion = {},
+					// sc = 0,
+					emotion;
+				for (let i = 0, c, p, len = emotions.emotion.length; i < len; i++) {
+					c = emotions.emotion[i];
+					if (c.error > lenKm || i === len - 1) {
+						let it = i === len - 1 ? c : p || c;
+						emotion = {title: emotions.rank[it.rank], color: it.color, score: strLen};
+						break;
+					}
+					p = c;
+				}
+				
+				if (isContains) {
+					// sc = 10;
+					emotion = {title: 'ВАУ, КРУТО!', score: ''};
+					// resultQuestion.ok = sc + ' баллов';
+					if (this.audioStarted) this.audio.stop(0);
+					this.audioStart(11.74689342403628, 3.82984126984127);
+				} else {
+					this.audioStart(8.50453514739229, 0.20950113378684806);
+					
+				}
+				resultQuestion.question = item;
+				resultQuestion.len = isContains ? 0 : lenM;
+				resultQuestion.strLen = isContains ? '0' : strLen;
+				this.set({resultQuestion: resultQuestion, emotion: emotion});
+			},
+			clickMap(ev) {
+				if (this.marker) {
+					this.map.removeLayer(this.marker);
+				}
+				this._latlng = ev.latlng;
+				this.marker = L.marker(this._latlng, {icon: L.divIcon({className: 'my-div-icon', iconSize: [4, 4], iconAnchor:[10, 10]})}).addTo(this.map);
+				
+				this.set({point: true});
+			},
+			audioStart(start, duration) {
+				if (this.sound) {
+					let audioCtx = new (window.AudioContext || window.webkitAudioContext)(),
+						source = audioCtx.createBufferSource(),
+						request = new XMLHttpRequest();
+					request.open('GET', 'mp3/audio.mp3', true);
+					request.responseType = 'arraybuffer';
+					request.onload = function() {
+						let audioData = request.response;
+						audioCtx.decodeAudioData(request.response, function(buffer) {
+							source.buffer = buffer;
+							source.start(audioCtx.currentTime + 1, start, duration);
+							source.connect(audioCtx.destination);
+							// source.loop = true;
+						  },
+
+						  function(e){ console.log("Error with decoding audio data" + e.err); }
+						);
+					}
+					request.send();
+				}
+			},
+			_clearLayers() {
+				if (this.marker) { this.map.removeLayer(this.marker); this.marker = null; }
+				if (this.polyline) { this.map.removeLayer(this.polyline); this.polyline = null; }
+				if (this.currentLayer) { this.map.removeLayer(this.currentLayer); this.currentLayer = null; }
+			},
+			createMap(it) {
+				let state = it.state || {},
+					mapID = it.mapID || 'A557835E1B2344479C092FBB0158B529',
+					layerID = it.layerID || 'F9728D94848F4163A19DF5B5A6BFDDF1', //'5F2A707A119A45EF9BD490187E909830',
+					apiKey = it.apiKey,
+					pos = state.map ? state.map.position : {};
+
+				this.sound = it.sound;
+
+				var osm = it.base == 1 ? 
+					L.tileLayer('//tilessputnik.ru/{z}/{x}/{y}.png', {
+                        attribution: '<a href="http://maps.sputnik.ru">Спутник</a> © Ростелеком | © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+						maxNativeZoom: 18,
+						maxZoom: 21
+					}) :
+					L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia29zbW9zbmlta2kiLCJhIjoiY2lvbW1tNXN0MDAwdnc4bHg5ZWw2YXJtYSJ9.ON9Ovi3fuHc5RAipmLb2EQ', {
+						attribution: '&copy; <a href="//mapbox.com/">mapbox</a>',
+						maxNativeZoom: 18,
+						maxZoom: 21
+					});
+
+				let map = new L.Map('map', {
+					attribution: '&copy; <a href="//scanex.ru/">scanex</a>',
+					allWorld: true,
+					generalized: false,
+					layers: [osm],
+					center: new L.LatLng(pos.y || 26, pos.x || 83),
+					zoom: pos.z || 7
+				}).on('click', this.clickMap.bind(this), this);
+
+				// map.gmxControlsManager.init();
+				map.zoomControl.setPosition('bottomright');
+				if (layerID) {
+					this.getLayerGame(layerID);
+				}
+				this.quizList = true;
+				this.map = map;
+			}
+		},
+		oncreate() {
+			let {urlParams} = this.get();
+			this.createMap(urlParams);
+		},
+
+		onstate({ changed, current, previous }) {
+			// console.log('in onstate', this);
+			if (changed.selectQuiz && current.selectQuiz) {
+				this._clearLayers();
+				this.set({quizList: this.quizList});
+			} else if (changed.layerID && current.layerID) {
+				this.getSections(this.allData);
+			} else if (changed.question && current.question) {
+				this.getQuestion(current.question);
+			} else if (current.reBuildQuestions) {
+				this.reBuildQuestions(current.sectionsList);
+			} else if (changed.calc && current.calc) {
+				if (this.question) {
+					this.showQuestionResult();
+				} else {
+					this.needResult = true;
+				}
+			}
+		}
+	}
+</script>

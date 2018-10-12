@@ -1,0 +1,329 @@
+<Map urlParams={urlParams}
+	bind:selectQuiz
+	bind:sectionsList
+	bind:quizList
+	bind:layerID
+	bind:layerGame
+	bind:score
+	bind:questions
+	bind:question
+	bind:point
+	bind:calc
+	bind:emotion
+	bind:emotions
+	bind:resultQuestion
+	bind:reBuildQuestions
+/>
+{#if !question}
+<div class="scrim"></div>
+{/if}
+<div class="controls">
+	<div class="title bg">
+	{#if question}
+		<button class="start" disabled="{isSectionsEmpty}" on:click="set({question:''})">Начать игру заново</button>
+	{/if}
+	</div>
+	<div class="content">
+{#if quizList}
+		<h1 class="title">Добро пожаловать!</h1>
+		<p>Мы рады приветствовать вас в нашем интерактивном географическом квесте!
+	В этой игре мы предлагаем выбрать рубрики, в рамках воторых вам предстоит находить места на карте, зная только их названия. Думаете просто?
+		</p>
+		<button class="start" disabled="{isSectionsEmpty}" on:click="set({quizList: null, layerID: 'F9728D94848F4163A19DF5B5A6BFDDF1'})">Давайте проверим!</button>
+{:elseif question}
+		<div class="question">
+			{question ? question.properties.TITLE + ' (' + question.properties.SECTION + ')' : ''}?
+			{#if resultQuestion}
+				<div class="emotion">
+					<span class="emotionTitle" style="color: {emotion.color}">{emotion.title}</span>
+					<span class="emotionScore">{emotion.score}</span>
+				</div>
+				<button class="start" on:click="nextQuestion()">Следующий вопрос</button>
+				<hr />
+				<div class="question-result">
+					<ul>
+					{#each currentScore as it}
+						<li>{it.question.properties.TITLE}: <b>{it.strLen}</b></li>
+					{/each}
+					</ul>
+					<hr />
+					Общий результат: {currentItog}
+				</div>
+			{:else}
+	{#if point}
+			<p class="standart">Вы уверены?</p>
+			<button class="start" on:click="set({calc:true})">Подтвердить выбор</button>
+	{:else}
+			<p class="standart">Кликните по карте в предпологаемом месте расположения объекта</p>
+	{/if}
+			{/if}
+		</div>
+{:elseif !layerID}
+		<div class="center">
+			<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+		</div>
+{:else}
+		<div class="subcontent">
+		{#if sectionsList}
+			<h1 class="section">Рубрики</h1>
+			<ul class="selectSectionsList">
+			{#each Object.keys(sectionsList) as it}
+				<li><input on:change="checkSection(it, this.checked)" type="checkbox" checked/>{it}</li>
+			{/each}
+			</ul>
+			<button class="start" disabled="{isSectionsEmpty}" on:click="start()">Начать игру</button>
+		{:else}
+			<div class="center"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>
+		{/if}
+		</div>
+{/if}
+	</div>
+</div>
+
+<script>
+	// const serverBase = window.serverBase || '//maps.kosmosnimki.ru/';
+	import Map from './Map.html';
+	export default {
+		data() {
+			return {
+				urlParams: {},
+				quizList: [],
+				selectQuiz: null,
+				sectionsList: null,
+				layerID: '',
+				// layerGame: false,
+				questions: false,
+				question: false,
+				point: false,
+				calc: false,
+				emotion: false,
+				emotions: emotions,
+				resultQuestion: false,
+				reBuildQuestions: false,
+				// props: {},
+				currentScore: [],
+				score: null
+			}
+		},
+		computed: {
+			// props: ({ layerGame }) => layerGame ? layerGame.getGmxProperties() : {},
+			currentItog: ({ currentScore }) => L.gmxUtil.prettifyDistance(currentScore.reduce((p, c) => p + c.len, 0)),
+			isSectionsEmpty: ({ sectionsList }) => {
+				let res = false;
+				if (sectionsList) {
+					res = true;
+					for(let key in sectionsList) {
+						if (sectionsList[key]) { res = false; break; }
+					}
+				}
+				return res;
+			}
+		},
+		methods: {
+			checkSection(key, flag) {
+				// console.log('checkSection', key, flag);
+				let {sectionsList} = this.get();
+				sectionsList[key] = flag;
+				this.set({sectionsList: sectionsList});
+			},
+			start() {
+				//this.set({quizList: 1});
+				this.set({reBuildQuestions: true, quizList: null, layerID: 'F9728D94848F4163A19DF5B5A6BFDDF1'})
+				this.nextQuestion(0, true);
+			},
+			nextQuestion(sc, clearCurrentScore) {
+				let {questions, props, score, currentScore} = this.get(),
+					question = questions.shift();
+
+				this.sc = this.sc || 0;
+				this.sc += (sc || 0);
+				if (!question) {
+					score = score || {};
+					let id = props.name,
+						arr = score[id] || [];
+					arr.push(this.sc);
+					let len = arr.length;
+					score[id] = arr.slice(len - 5, len);
+					window.localStorage.setItem('_gameQuiz_', JSON.stringify(score));
+				}
+				if (clearCurrentScore) { currentScore = []; }
+				this.set({questions: questions, question: question, point: false, calc: false, resultQuestion: false, currentScore: currentScore});
+			}
+		},
+
+		components: {
+			Map
+		},
+
+		onstate({ changed, current, previous }) {
+			// console.log('in onstate', this);
+			if (changed.resultQuestion && current.resultQuestion) {
+				let {currentScore} = this.get();
+				currentScore.push(current.resultQuestion);
+				this.set({currentScore: currentScore});
+			}
+		}
+	}
+</script>
+
+<style>
+.question {
+	font-style: normal;
+	font-weight: bold;
+	line-height: normal;
+	font-size: 21px;
+
+	color: #5C7080;
+    margin: 10px;
+}
+.standart {
+	font-style: normal;
+	font-weight: normal;
+	line-height: normal;
+	font-size: 14px;
+}
+.question li {
+	font-weight: initial;
+    list-style-type: decimal;
+}
+.controls {
+	z-index: 1000;
+	position: absolute;
+	width: 410px;
+	padding-bottom: 26px;
+	left: 10px;
+	top: 10px;
+
+	background: #FFFFFF;
+	box-sizing: border-box;
+	border-radius: 10px;
+}
+.controls .bg {
+	width: 410px;
+	height: 150px;
+	text-align: center;
+
+	background-color: #0074E4;
+	background-image: url(./styles/strange.png);
+	background-position: 30px 30px;
+    background-repeat: no-repeat;
+	border-radius: 10px 10px 0px 0px;
+}
+.controls button {
+    cursor: pointer;
+}
+.controls .title button {
+    position: relative;
+	top: 100px;
+	background-color: #CED9E0;
+	border: 1px solid #CED9E0;
+	box-sizing: border-box;
+	border-radius: 10px;
+}
+.controls .content {
+    padding: 0px 20px;
+}
+.content button {
+    color: white;
+	background-color: #0074E4;
+	border: 1px solid #CED9E0;
+	box-sizing: border-box;
+	border-radius: 10px;
+
+	width: 255px;
+	height: 60px;
+
+	font-style: normal;
+	font-weight: 500;
+	line-height: normal;
+	font-size: 16px;
+	text-align: center;
+}
+.center {
+    text-align: center;
+}
+.emotionScore {
+	font-size: 20px;
+}
+.emotion {
+	margin: 10px;
+	font-style: normal;
+	font-weight: 800;
+	line-height: normal;
+	font-size: 16px;
+
+	color: #47E320;
+}
+.selectQuiz {
+	cursor: pointer;
+}
+.selectSectionsList {
+	list-style: none;
+}
+
+.scrim {
+  position: fixed;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.4);
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 100vh;
+}
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 47px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 20px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #70cbe0;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 6px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 6px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 26px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 45px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(19px, 0);
+  }
+}
+
+</style>

@@ -1,0 +1,465 @@
+html, body, #map {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+}
+#map {
+	cursor:pointer;
+}
+.my-div-icon {
+    background: #CED9E0;
+    border: 8px solid rgba(0, 116, 228, 0.5);
+    border-radius: 12px;
+}
+
+.leaflet-popup-content {
+    font-size: large;
+}
+.leaflet-popup-content div {
+    text-align: center;
+}
+@font-face {
+  font-family: 'fontello';
+  src: url('font/fontello.eot?2f1ce1');
+  src: url('font/fontello.eot?7147309#iefix') format('embedded-opentype'),
+       url('font/fontello.woff?3c19f2') format('woff'),
+       url('font/fontello.ttf?ad63f8') format('truetype'),
+       url('font/fontello.svg?7147309#fontello') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  font-family: "fontello";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  /* opacity: .8; */
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+
+.icon-help2:before {
+  content: '\';
+}
+
+.icon-vk:before {
+  content: '\';
+}
+
+.icon-right-open:before {
+  content: '\';
+}
+
+.icon-twitter:before {
+  content: '\';
+}
+
+.icon-facebook:before {
+  content: '\';
+}
+
+.icon-user:before {
+  content: '\';
+}
+
+.icon-calendar:before {
+  content: '\';
+}
+
+.icon-calendar-empty:before {
+  content: '\';
+}
+
+.icon-plus-squared:before {
+  content: '\';
+}
+
+.icon-plus-squared-alt:before {
+  content: '\';
+}
+
+.icon-minus-squared-alt:before {
+  content: '\';
+}
+
+.icon-minus-squared:before {
+  content: '\';
+}
+
+.icon-angle-left:before {
+  content: '\';
+}
+
+.icon-angle-right:before {
+  content: '\';
+}
+
+.icon-angle-up:before {
+  content: '\';
+}
+
+.icon-angle-down:before {
+  content: '\';
+}
+
+.icon-angle-double-left:before {
+  content: '\';
+}
+
+.icon-angle-double-right:before {
+  content: '\';
+}
+
+.icon-angle-double-up:before {
+  content: '\';
+}
+
+.icon-angle-double-down:before {
+  content: '\';
+}
+
+.icon-lock:before {
+  content: '\';
+}
+
+.icon-menu:before {
+  content: '\';
+}
+
+.icon-lock-open:before {
+  content: '\';
+}
+
+.icon-lock-open-alt:before {
+  content: '\';
+}
+
+.icon-clock:before {
+  content: '\';
+}
+
+.icon-dot:before {
+  content: '\';
+}
+
+.icon-dot-2:before {
+  content: '\';
+}
+
+.icon-dot-3:before {
+  content: '\';
+}
+
+.icon-down-dir:before {
+  content: '\';
+}
+
+.icon-up-dir:before {
+  content: '\';
+}
+
+.icon-left-dir:before {
+  content: '\';
+}
+
+.icon-check:before {
+  content: '\';
+}
+
+.icon-right-dir:before {
+  content: '\';
+}
+
+.icon-info:before {
+  content: '\';
+}
+
+.icon-cog:before {
+  content: '\';
+}
+
+.icon-blank:before {
+  content: '\';
+}
+
+.icon-link-ext:before {
+  content: '\';
+}
+
+.icon-link-ext-alt:before {
+  content: '\';
+}
+
+.icon-cancel:before {
+  content: '\';
+}
+
+.icon-pencil:before {
+  content: '\';
+}
+
+.icon-target:before {
+  content: '\';
+}
+
+.icon-calendar-alt:before {
+  content: '\';
+}
+
+.icon-left-open:before {
+  content: '\';
+}
+
+.icon-up-open:before {
+  content: '\';
+}
+
+.icon-down-open:before {
+  content: '\';
+}
+
+.icon-fire:before {
+  content: '\';
+}
+
+.icon-layers:before {
+  content: '\';
+}
+
+.icon-magic:before {
+  content: '\';
+}
+
+.icon-refresh:before {
+  content: '\';
+}
+
+.icon-save:before {
+  content: '\';
+}
+
+.icon-link:before {
+  content: '\';
+}
+
+.icon-switch:before {
+  content: '\';
+}
+
+.icon-toggle-off:before {
+  content: '\';
+}
+
+.icon-toggle-on:before {
+  content: '\';
+}
+
+.icon-bookmark:before {
+  content: '\';
+}
+
+.icon-mail:before {
+  content: '\';
+}
+
+.icon-bell:before {
+  content: '\';
+}
+
+.icon-radio:before {
+  content: '\';
+}
+
+.icon-play:before {
+  content: '\';
+}
+
+.icon-radio-outline:before {
+  content: '\';
+}
+
+.icon-pause:before {
+  content: '\';
+}
+
+.icon-stop:before {
+  content: '\';
+}
+
+.icon-globe:before {
+  content: '\';
+}
+
+.icon-map:before {
+  content: '\';
+}
+
+.icon-location:before {
+  content: '\';
+}
+
+.icon-direction:before {
+  content: '\';
+}
+
+.icon-eye:before {
+  content: '\';
+}
+
+.icon-eye-off:before {
+  content: '\';
+}
+
+.icon-undo:before {
+  content: '\';
+}
+
+.icon-export:before {
+  content: '\';
+}
+
+.icon-newspaper:before {
+  content: '\';
+}
+
+.icon-school:before {
+  content: '\';
+}
+
+.icon-fighter-jet:before {
+  content: '\';
+}
+
+.icon-cloud-sun:before {
+  content: '\';
+}
+
+.icon-resize-vertical:before {
+  content: '\';
+}
+
+.icon-resize-full:before {
+  content: '\';
+}
+
+.icon-building:before {
+  content: '\';
+}
+
+.icon-ship:before {
+  content: '\';
+}
+
+.icon-search:before {
+  content: '\';
+}
+
+.icon-description:before {
+  content: '\';
+}
+
+.icon-fullscreen:before {
+  content: '\';
+}
+
+.icon-layers2:before {
+  content: '\';
+}
+
+.icon-minus:before {
+  content: '\';
+}
+
+.icon-plus:before {
+  content: '\';
+}
+
+.icon-print:before {
+  content: '\';
+}
+
+.icon-toolbar:before {
+  content: '\';
+}
+
+.icon-widjet:before {
+  content: '\';
+}
+
+.icon-menu2:before {
+  content: '\';
+}
+
+/* контейнер sidebar */
+.editor-sidebarContainer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  -webkit-transition: width .5s ease;
+  transition: width .5s ease;
+  z-index: 20;
+}
+
+.editor_sidebarExpanded.editor-sidebarContainer {
+  width: 500px;
+}
+
+
+
+/* контейнер карты */
+.editor-viewerContainer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  left: 500px;
+  z-index: 5;
+}
+
+.tabIcon svg {
+    width: 26px;
+    height: 40px;
+}
+
+/*	for scrollbar	*/
+
+::-webkit-scrollbar
+{
+	cursor: pointer;
+	width: 4px;  /* for vertical scrollbars */
+	height: 12px; /* for horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track
+{
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb
+{
+  background: rgba(0, 0, 0, 0.5);
+}

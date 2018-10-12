@@ -1,0 +1,102 @@
+.iconSidebarControl-controlCorner { }
+.iconSidebarControl-controlCorner_noie { padding: 10px; background-color: hsla(0, 0%, 100%, 0); transition: background-color .5s ease; }
+.iconSidebarControl-controlCorner_locked { pointer-events: auto; }
+.iconSidebarControl-controlCorner_ie9 { padding: 10px; } /* в IE9 background не даёт кликнуть по слоям */
+.iconSidebarControl-controlCorner-fadeIn { background-color: hsla(0, 0%, 100%, 1); }
+
+.iconSidebarControl {
+  overflow: hidden;
+  z-index: 2000;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
+}
+
+.iconSidebarControl-controlCorner .iconSidebarControl { margin: 0; }
+
+.iconSidebarControl { transition: width .25s ease; }
+.iconSidebarControl { width: 40px; }
+.iconSidebarControl_opened { width: 305px; }
+.iconSidebarControl_expanded { height: 100%; min-height: 600px }
+
+.iconSidebarControl-pane { width: 265px; }
+
+.iconSidebarControl.leaflet-touch {
+  box-shadow: none;
+  border-right: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.iconSidebarControl-left.leaflet-control { float: left; }
+.iconSidebarControl-right.leaflet-control { float: right; }
+
+.iconSidebarControl-tabs {
+  position: static;
+  top: 0;
+  width: 40px;
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+  list-style-type: none;
+}
+
+.iconSidebarControl_expanded .iconSidebarControl-tabs { position: absolute; }
+.iconSidebarControl-left .iconSidebarControl-tabs { left: 0; }
+.iconSidebarControl-right .iconSidebarControl-tabs { right: 0; }
+
+.iconSidebarControl-tab {
+  width: 100%;
+  height: 40px;
+  color: #333;
+  font-size: 12pt;
+  overflow: hidden;
+  transition: all 80ms;
+  line-height: 40px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.iconSidebarControl-tab:hover {
+  color: #000;
+  background-color: #eee;
+}
+
+.iconSidebarControl-tab.iconSidebarControl-tab-active {
+  color: #fff;
+  background-color: #0074d9;
+}
+
+.iconSidebarControl-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.95);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.iconSidebarControl_expanded .iconSidebarControl-content { display: block; }
+.iconSidebarControl-left .iconSidebarControl-content { left: 40px; }
+.iconSidebarControl-right .iconSidebarControl-content { right: 40px; }
+
+.iconSidebarControl-pane {
+  display: none;
+  right: 0;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 5px;
+}
+
+.iconSidebarControl-pane.iconSidebarControl-pane-active { display: block;  }
+
+.iconSidebarControl .labelIconWidget {
+    line-height: 12px;
+}
+
+.iconSidebarControl .labelIconWidget .labelIconWidget-label {
+    top: -5px;
+    right: -5px;
+}
