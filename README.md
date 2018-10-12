@@ -1,2 +1,7 @@
-# gmxGeoGame
-https://docs.google.com/document/d/13xqqlpv33I1Zq00CPvn9YRihRYMMd_7WkaOl5YrMKz0/edit#heading=h.iliwxrml11gy
+
+*Игра — знание географии *
+
+---
+
+  [Пример](https://originalsin.github.io/gmxGeoGame/public/index.html?layerID=F9728D94848F4163A19DF5B5A6BFDDF1&sound=1)
+  
