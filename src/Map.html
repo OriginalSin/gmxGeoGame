@@ -179,7 +179,7 @@
 					state = it.state || {},
 					mapID = it.mapID || 'A557835E1B2344479C092FBB0158B529',
 					layerID = it.layerID || 'F9728D94848F4163A19DF5B5A6BFDDF1', //'5F2A707A119A45EF9BD490187E909830',
-					apiKey = it.apiKey,
+					apiKey = it.apiKey || apikey,
 					pos = state.map ? state.map.position : {};
 
 				this.sound = it.sound;
@@ -190,7 +190,7 @@
 						maxNativeZoom: 18,
 						maxZoom: 21
 					}) :
-					L.tileLayer('//maps.kosmosnimki.ru/TileSender.ashx?ModeKey=tile&ftc=osm&srs=3857&z={z}&x={x}&y={y}&LayerName=C9458F2DCB754CEEACC54216C7D1EB0A', {
+					L.tileLayer('//maps.kosmosnimki.ru/TileSender.ashx?ModeKey=tile&ftc=osm&srs=3857&z={z}&x={x}&y={y}&LayerName=C9458F2DCB754CEEACC54216C7D1EB0A&apiKey=' + apiKey, {
 						maxNativeZoom: 18,
 						maxZoom: 21
 					});
