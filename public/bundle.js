@@ -243,7 +243,7 @@ var app = (function () {
 				var key = it.properties.SECTION;
 				if (!sections[key]) { sections[key] = []; }			sections[key].push(it);
 			});
-			var arrSections = Object.keys(sections).sort(() => Math.random() > 0.5 ),
+			var arrSections = Object.keys(sections).sort(function() { return Math.random() > 0.5; } ),
 				len = arrSections.length,
 				sections1 = {};
 			// console.log('llll', arrSections);
