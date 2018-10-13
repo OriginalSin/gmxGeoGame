@@ -38,7 +38,13 @@
 					<span class="emotionTitle" style="color: {emotion.color}">{emotion.title}</span>
 					<span class="emotionScore">{emotion.score}</span>
 				</div>
+				{#if questions && questions.length}
 				<button class="start" on:click="nextQuestion()">Следующий вопрос</button>
+				{:else}
+				<div class="itog">
+					Ваш итоговый результат: <span class="red">{currentItog}</span>
+				</div>
+				{/if}
 				<hr />
 				<div class="question-result">
 					<ul>
@@ -135,16 +141,16 @@
 				let {questions, props, score, currentScore} = this.get(),
 					question = questions.shift();
 
-				this.sc = this.sc || 0;
-				this.sc += (sc || 0);
+				// this.sc = this.sc || 0;
+				// this.sc += (sc || 0);
 				if (!question) {
-					score = score || {};
-					let id = props.name,
-						arr = score[id] || [];
-					arr.push(this.sc);
-					let len = arr.length;
-					score[id] = arr.slice(len - 5, len);
-					window.localStorage.setItem('_gameQuiz_', JSON.stringify(score));
+					// score = score || {};
+					// let id = props.name,
+						// arr = score[id] || [];
+					// arr.push(this.sc);
+					// let len = arr.length;
+					// score[id] = arr.slice(len - 5, len);
+					// window.localStorage.setItem('_gameQuiz_', JSON.stringify(score));
 				}
 				if (clearCurrentScore) { currentScore = []; }
 				this.set({questions: questions, question: question, point: false, calc: false, resultQuestion: false, currentScore: currentScore});
@@ -244,6 +250,9 @@
 }
 .emotionScore {
 	font-size: 20px;
+}
+.red {
+	color: red;
 }
 .emotion {
 	margin: 10px;

@@ -23,31 +23,45 @@
 			getSections(arr) {
 				let sections = {};
 				arr.forEach(function(it) {
-					sections[it.properties.SECTION] = true;
+					let key = it.properties.SECTION;
+					if (!sections[key]) { sections[key] = [] };
+					sections[key].push(it);
 				});
 				let arrSections = Object.keys(sections).sort(() => Math.random() > 0.5 ),
-					len = arrSections.length;
-				sections = {};
+					len = arrSections.length,
+					sections1 = {};
 				// console.log('llll', arrSections);
 				for(let i = 0, len1 = len > sectionsLen ? sectionsLen : len; i < len1; i++) {
-					sections[arrSections[i]] = true;
+					let key = arrSections[i];
+					sections1[key] = sections[key];
 				}
-				this.set({sectionsList: sections});
+				this.set({sectionsList: sections1});
 			},
 			reBuildQuestions(sectionsList) {
 				let arr = [],
+					sarr = [],
+					sectionsKeyArr = Object.keys(sectionsList),
+					sectionsLen = sectionsKeyArr.length,
 					ids = {};
-				this.allData.sort(()=>Math.random() > 0.5).forEach(function(it) {
-					let props = it.properties,
-						id = props.gmx_id,
-						key = props.SECTION;
-					if (!ids[id] && sectionsList[key]) {
-						arr.push(it);
-						ids[id] = true;
-					}
-				});
+				for(let i = 0; i < questionLen; i++) {
+					let key = sectionsKeyArr[Math.floor(sectionsLen * Math.random())],
+						arr1 = sectionsList[key],
+						len1 = arr1.length;
+					arr.push(arr1[Math.floor(len1 * Math.random())]);
+				}
+
+				// this.allData.sort(()=>Math.random() > 0.5).forEach(function(it) {
+					// let props = it.properties,
+						// id = props.gmx_id,
+						// key = props.SECTION;
+					// if (!ids[id] && sectionsList[key]) {
+						// arr.push(it);
+						// ids[id] = true;
+					// }
+				// });
 				// console.log('reBuildQuestions', arr);
-				this.set({questions: arr.slice(0, questionLen), reBuildQuestions: false});
+				this.set({questions: arr, reBuildQuestions: false});
+				// this.set({questions: arr.slice(0, questionLen), reBuildQuestions: false});
 			},
 			getQuestion(question) {
 				let {layerID} = this.get();
