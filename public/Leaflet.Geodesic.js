@@ -96,7 +96,7 @@ L.Geodesic = L.Polyline.extend({
       normalized
     ];
     this._latlngs = [];
-    for (var feature of features) {
+    for (var feature in features) {
       var geometry = feature.type === "Feature" ? feature.geometry :
         feature,
         coords = geometry.coordinates;
