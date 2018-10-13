@@ -568,19 +568,19 @@ var app = (function () {
 		}
 	}
 	var methods$1 = {
-		checkSection(key, flag) {
+		checkSection: function(key, flag) {
 			// console.log('checkSection', key, flag);
 			var ph = this.get(),
 			    sectionsList = ph.sectionsList;
 			sectionsList[key] = flag;
 			this.set({sectionsList: sectionsList});
 		},
-		start() {
+		start: function() {
 			//this.set({quizList: 1});
 			this.set({reBuildQuestions: true, quizList: null, layerID: 'F9728D94848F4163A19DF5B5A6BFDDF1'});
 			this.nextQuestion(0, true);
 		},
-		nextQuestion(sc, clearCurrentScore) {
+		nextQuestion: function(sc, clearCurrentScore) {
 			var ph = this.get(),
 			    questions = ph.questions,
 			    //props, score, 
