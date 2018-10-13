@@ -58,19 +58,7 @@
 						len1 = arr1.length;
 					arr.push(arr1[Math.floor(len1 * Math.random())]);
 				}
-
-				// this.allData.sort(()=>Math.random() > 0.5).forEach(function(it) {
-					// let props = it.properties,
-						// id = props.gmx_id,
-						// key = props.SECTION;
-					// if (!ids[id] && sectionsList[key]) {
-						// arr.push(it);
-						// ids[id] = true;
-					// }
-				// });
-				// console.log('reBuildQuestions', arr);
 				this.set({questions: arr, reBuildQuestions: false});
-				// this.set({questions: arr.slice(0, questionLen), reBuildQuestions: false});
 			},
 			getQuestion(question) {
 				var {layerID} = this.get();
@@ -202,11 +190,15 @@
 						maxNativeZoom: 18,
 						maxZoom: 21
 					}) :
-					L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia29zbW9zbmlta2kiLCJhIjoiY2lvbW1tNXN0MDAwdnc4bHg5ZWw2YXJtYSJ9.ON9Ovi3fuHc5RAipmLb2EQ', {
-						attribution: '&copy; <a href="//mapbox.com/">mapbox</a>',
+					L.tileLayer('//maps.kosmosnimki.ru/TileSender.ashx?ModeKey=tile&ftc=osm&srs=3857&z={z}&x={x}&y={y}&LayerName=C9458F2DCB754CEEACC54216C7D1EB0A', {
 						maxNativeZoom: 18,
 						maxZoom: 21
 					});
+					// L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia29zbW9zbmlta2kiLCJhIjoiY2lvbW1tNXN0MDAwdnc4bHg5ZWw2YXJtYSJ9.ON9Ovi3fuHc5RAipmLb2EQ', {
+						// attribution: '&copy; <a href="//mapbox.com/">mapbox</a>',
+						// maxNativeZoom: 18,
+						// maxZoom: 21
+					// });
 
 				var map = new L.Map('map', {
 					attribution: '&copy; <a href="//scanex.ru/">scanex</a>',
