@@ -1,4 +1,4 @@
-<Map urlParams={urlParams}
+<Map
 	bind:selectQuiz
 	bind:sectionsList
 	bind:quizList
@@ -29,7 +29,9 @@
 		<p>Мы рады приветствовать вас в нашем интерактивном географическом квесте!
 	В этой игре мы предлагаем выбрать рубрики, в рамках воторых вам предстоит находить места на карте, зная только их названия. Думаете просто?
 		</p>
+		{#if !isSectionsEmpty}
 		<button class="start" disabled="{isSectionsEmpty}" on:click="set({quizList: null, layerID: 'F9728D94848F4163A19DF5B5A6BFDDF1'})">Давайте проверим!</button>
+		{/if}
 {:elseif question}
 		<div class="question">
 			{question ? question.properties.TITLE + ' (' + question.properties.SECTION + ')' : ''}?
@@ -87,17 +89,14 @@
 </div>
 
 <script>
-	// const serverBase = window.serverBase || '//maps.kosmosnimki.ru/';
 	import Map from './Map.html';
 	export default {
 		data() {
 			return {
-				urlParams: {},
 				quizList: [],
 				selectQuiz: null,
-				sectionsList: null,
+				sectionsList: {},
 				layerID: '',
-				// layerGame: false,
 				questions: false,
 				question: false,
 				point: false,
@@ -106,24 +105,13 @@
 				emotions: emotions,
 				resultQuestion: false,
 				reBuildQuestions: false,
-				// props: {},
 				currentScore: [],
 				score: null
 			}
 		},
 		computed: {
-			// props: ({ layerGame }) => layerGame ? layerGame.getGmxProperties() : {},
 			currentItog: ({ currentScore }) => L.gmxUtil.prettifyDistance(currentScore.reduce((p, c) => p + c.len, 0)),
-			isSectionsEmpty: ({ sectionsList }) => {
-				var res = false;
-				if (sectionsList) {
-					res = true;
-					for(var key in sectionsList) {
-						if (sectionsList[key]) { res = false; break; }
-					}
-				}
-				return res;
-			}
+			isSectionsEmpty: ({ sectionsList }) => !(sectionsList && Object.keys(sectionsList).length)
 		},
 		methods: {
 			checkSection(key, flag) {
@@ -133,7 +121,6 @@
 				this.set({sectionsList: sectionsList});
 			},
 			start() {
-				//this.set({quizList: 1});
 				this.set({reBuildQuestions: true, quizList: null, layerID: 'F9728D94848F4163A19DF5B5A6BFDDF1'})
 				this.nextQuestion(0, true);
 			},
@@ -141,17 +128,6 @@
 				var {questions, props, score, currentScore} = this.get(),
 					question = questions.shift();
 
-				// this.sc = this.sc || 0;
-				// this.sc += (sc || 0);
-				if (!question) {
-					// score = score || {};
-					// let id = props.name,
-						// arr = score[id] || [];
-					// arr.push(this.sc);
-					// let len = arr.length;
-					// score[id] = arr.slice(len - 5, len);
-					// window.localStorage.setItem('_gameQuiz_', JSON.stringify(score));
-				}
 				if (clearCurrentScore) { currentScore = []; }
 				this.set({questions: questions, question: question, point: false, calc: false, resultQuestion: false, currentScore: currentScore});
 			}

@@ -9,11 +9,20 @@
 	var sectionsLen = 10;
 	var questionLen = 10;
 	var gameZoom = 3;
+	var  pars = (() => {
+		var  p = {};
+		location.search.substr(1).split('&').forEach((it) => {
+			var  arr = it.split('=');
+			p[arr[0]] = arr[1];
+		});
+		return p;
+	})();
 
 	export default {
 		data() {
 			return {
 				quizList: null,
+				sectionsList: null,
 				questions: null,
 				permalink: null,
 				map: null
@@ -88,6 +97,7 @@
 					.then(function(resp) { return resp.json(); })
 					.then(function(json) {
 						this.allData = json.features;
+						this.getSections(this.allData);
 					}.bind(this));
 			},
 			showQuestionResult() {
@@ -176,8 +186,9 @@
 				if (this.polyline) { this.map.removeLayer(this.polyline); this.polyline = null; }
 				if (this.currentLayer) { this.map.removeLayer(this.currentLayer); this.currentLayer = null; }
 			},
-			createMap(it) {
-				var state = it.state || {},
+			createMap() {
+				var it = pars,
+					state = it.state || {},
 					mapID = it.mapID || 'A557835E1B2344479C092FBB0158B529',
 					layerID = it.layerID || 'F9728D94848F4163A19DF5B5A6BFDDF1', //'5F2A707A119A45EF9BD490187E909830',
 					apiKey = it.apiKey,
