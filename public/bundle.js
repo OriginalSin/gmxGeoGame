@@ -279,7 +279,8 @@ var app = (function () {
 			// this.set({questions: arr.slice(0, questionLen), reBuildQuestions: false});
 		},
 		getQuestion: function(question) {
-			var {layerID} = this.get();
+			var ph = this.get(),
+			    layerID = ph.layerID;
 
 			this.question = null;
 			var query = 'gmx_id=' + question.properties.gmx_id,
@@ -307,7 +308,8 @@ var app = (function () {
 		},
 		showQuestionResult: function() {
 			// if (this.polyline) { this.map.removeLayer(this.polyline); }
-			var {emotions} = this.get(),
+			var ph = this.get(),
+			    emotions = ph.emotions,
 				item = this.question,
 				layers = L.geoJSON(item.geometry).getLayers(),
 				closestLayer = L.GeometryUtil.closestLayer(this.map, layers, this._latlng),
@@ -431,8 +433,8 @@ var app = (function () {
 	};
 
 	function oncreate() {
-		var {urlParams} = this.get();
-		this.createMap(urlParams);
+			var ph = this.get();
+		this.createMap(ph.urlParams);
 	}
 	function onstate({ changed, current, previous }) {
 		// console.log('in onstate', this);
