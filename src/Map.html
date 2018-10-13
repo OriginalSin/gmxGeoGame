@@ -4,11 +4,11 @@
 </style>
 
 <script>
-	const serverBase = window.serverBase || '//maps.kosmosnimki.ru/';
-	const apikey = 'PBZU2XXPDM';
-	const sectionsLen = 10;
-	const questionLen = 10;
-	const gameZoom = 3;
+	var serverBase = window.serverBase || '//maps.kosmosnimki.ru/';
+	var apikey = 'PBZU2XXPDM';
+	var sectionsLen = 10;
+	var questionLen = 10;
+	var gameZoom = 3;
 
 	export default {
 		data() {
@@ -21,30 +21,30 @@
 		},
 		methods: {
 			getSections(arr) {
-				let sections = {};
+				var sections = {};
 				arr.forEach(function(it) {
-					let key = it.properties.SECTION;
+					var key = it.properties.SECTION;
 					if (!sections[key]) { sections[key] = [] };
 					sections[key].push(it);
 				});
-				let arrSections = Object.keys(sections).sort(() => Math.random() > 0.5 ),
+				var arrSections = Object.keys(sections).sort(() => Math.random() > 0.5 ),
 					len = arrSections.length,
 					sections1 = {};
 				// console.log('llll', arrSections);
-				for(let i = 0, len1 = len > sectionsLen ? sectionsLen : len; i < len1; i++) {
-					let key = arrSections[i];
+				for(var i = 0, len1 = len > sectionsLen ? sectionsLen : len; i < len1; i++) {
+					var key = arrSections[i];
 					sections1[key] = sections[key];
 				}
 				this.set({sectionsList: sections1});
 			},
 			reBuildQuestions(sectionsList) {
-				let arr = [],
+				var arr = [],
 					sarr = [],
 					sectionsKeyArr = Object.keys(sectionsList),
 					sectionsLen = sectionsKeyArr.length,
 					ids = {};
-				for(let i = 0; i < questionLen; i++) {
-					let key = sectionsKeyArr[Math.floor(sectionsLen * Math.random())],
+				for(var i = 0; i < questionLen; i++) {
+					var key = sectionsKeyArr[Math.floor(sectionsLen * Math.random())],
 						arr1 = sectionsList[key],
 						len1 = arr1.length;
 					arr.push(arr1[Math.floor(len1 * Math.random())]);
@@ -64,10 +64,10 @@
 				// this.set({questions: arr.slice(0, questionLen), reBuildQuestions: false});
 			},
 			getQuestion(question) {
-				let {layerID} = this.get();
+				var {layerID} = this.get();
 
 				this.question = null;
-				let query = 'gmx_id=' + question.properties.gmx_id,
+				var query = 'gmx_id=' + question.properties.gmx_id,
 					url = serverBase + 'rest/ver1/layers/' + layerID + '/search?apikey=' + apikey + '&query=' + query;
 				fetch(url, {mode: 'cors'})
 					.then(function(resp) { return resp.json(); })
@@ -83,7 +83,7 @@
 				this.map.setZoom(gameZoom);
 			},
 			getLayerGame(layerID) {
-				let url = serverBase + 'rest/ver1/layers/' + layerID + '/search?apikey=' + apikey + '&columns=[{%22Value%22:%22[gmx_id]%22},{%22Value%22:%22[TITLE]%22},{%22Value%22:%22SECTION%22}]';
+				var url = serverBase + 'rest/ver1/layers/' + layerID + '/search?apikey=' + apikey + '&columns=[{%22Value%22:%22[gmx_id]%22},{%22Value%22:%22[TITLE]%22},{%22Value%22:%22SECTION%22}]';
 				fetch(url, {mode: 'cors'})
 					.then(function(resp) { return resp.json(); })
 					.then(function(json) {
@@ -92,7 +92,7 @@
 			},
 			showQuestionResult() {
 				// if (this.polyline) { this.map.removeLayer(this.polyline); }
-				let {emotions} = this.get(),
+				var {emotions} = this.get(),
 					item = this.question,
 					layers = L.geoJSON(item.geometry).getLayers(),
 					closestLayer = L.GeometryUtil.closestLayer(this.map, layers, this._latlng),
@@ -105,20 +105,20 @@
 					polyline = L.geodesic([[closest, this._latlng]], {color: 'red'}).addTo(this.map);
 
 				this.map.fitBounds(polyline.getBounds());
-				let geoJson = polyline.toGeoJSON().geometry;
+				var geoJson = polyline.toGeoJSON().geometry;
 
 				this.currentLayer = currentLayer.addTo(this.map);
 				this.polyline = polyline;
-				let lenM = L.gmxUtil.geoJSONGetLength(geoJson),
+				var lenM = L.gmxUtil.geoJSONGetLength(geoJson),
 					lenKm = Math.round(lenM / 1000),
 					strLen = L.gmxUtil.getGeoJSONSummary(geoJson),
 					resultQuestion = {},
 					// sc = 0,
 					emotion;
-				for (let i = 0, c, p, len = emotions.emotion.length; i < len; i++) {
+				for (var i = 0, c, p, len = emotions.emotion.length; i < len; i++) {
 					c = emotions.emotion[i];
 					if (c.error > lenKm || i === len - 1) {
-						let it = i === len - 1 ? c : p || c;
+						var it = i === len - 1 ? c : p || c;
 						emotion = {title: emotions.rank[it.rank], color: it.color, score: strLen};
 						break;
 					}
@@ -151,13 +151,13 @@
 			},
 			audioStart(start, duration) {
 				if (this.sound) {
-					let audioCtx = new (window.AudioContext || window.webkitAudioContext)(),
+					var audioCtx = new (window.AudioContext || window.webkitAudioContext)(),
 						source = audioCtx.createBufferSource(),
 						request = new XMLHttpRequest();
 					request.open('GET', 'mp3/audio.mp3', true);
 					request.responseType = 'arraybuffer';
 					request.onload = function() {
-						let audioData = request.response;
+						var audioData = request.response;
 						audioCtx.decodeAudioData(request.response, function(buffer) {
 							source.buffer = buffer;
 							source.start(audioCtx.currentTime + 1, start, duration);
@@ -177,7 +177,7 @@
 				if (this.currentLayer) { this.map.removeLayer(this.currentLayer); this.currentLayer = null; }
 			},
 			createMap(it) {
-				let state = it.state || {},
+				var state = it.state || {},
 					mapID = it.mapID || 'A557835E1B2344479C092FBB0158B529',
 					layerID = it.layerID || 'F9728D94848F4163A19DF5B5A6BFDDF1', //'5F2A707A119A45EF9BD490187E909830',
 					apiKey = it.apiKey,
@@ -197,7 +197,7 @@
 						maxZoom: 21
 					});
 
-				let map = new L.Map('map', {
+				var map = new L.Map('map', {
 					attribution: '&copy; <a href="//scanex.ru/">scanex</a>',
 					allWorld: true,
 					generalized: false,
@@ -216,7 +216,7 @@
 			}
 		},
 		oncreate() {
-			let {urlParams} = this.get();
+			var {urlParams} = this.get();
 			this.createMap(urlParams);
 		},
 

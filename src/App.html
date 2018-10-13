@@ -115,10 +115,10 @@
 			// props: ({ layerGame }) => layerGame ? layerGame.getGmxProperties() : {},
 			currentItog: ({ currentScore }) => L.gmxUtil.prettifyDistance(currentScore.reduce((p, c) => p + c.len, 0)),
 			isSectionsEmpty: ({ sectionsList }) => {
-				let res = false;
+				var res = false;
 				if (sectionsList) {
 					res = true;
-					for(let key in sectionsList) {
+					for(var key in sectionsList) {
 						if (sectionsList[key]) { res = false; break; }
 					}
 				}
@@ -128,7 +128,7 @@
 		methods: {
 			checkSection(key, flag) {
 				// console.log('checkSection', key, flag);
-				let {sectionsList} = this.get();
+				var {sectionsList} = this.get();
 				sectionsList[key] = flag;
 				this.set({sectionsList: sectionsList});
 			},
@@ -138,7 +138,7 @@
 				this.nextQuestion(0, true);
 			},
 			nextQuestion(sc, clearCurrentScore) {
-				let {questions, props, score, currentScore} = this.get(),
+				var {questions, props, score, currentScore} = this.get(),
 					question = questions.shift();
 
 				// this.sc = this.sc || 0;
@@ -164,7 +164,7 @@
 		onstate({ changed, current, previous }) {
 			// console.log('in onstate', this);
 			if (changed.resultQuestion && current.resultQuestion) {
-				let {currentScore} = this.get();
+				var {currentScore} = this.get();
 				currentScore.push(current.resultQuestion);
 				this.set({currentScore: currentScore});
 			}
