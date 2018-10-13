@@ -237,7 +237,7 @@ var app = (function () {
 		}
 	}
 	var methods = {
-		getSections(arr) {
+		getSections: function(arr) {
 			var sections = {};
 			arr.forEach(function(it) {
 				var key = it.properties.SECTION;
@@ -253,7 +253,7 @@ var app = (function () {
 			}
 			this.set({sectionsList: sections1});
 		},
-		reBuildQuestions(sectionsList) {
+		reBuildQuestions: function(sectionsList) {
 			var arr = [],
 				sectionsKeyArr = Object.keys(sectionsList),
 				sectionsLen = sectionsKeyArr.length;
@@ -278,7 +278,7 @@ var app = (function () {
 			this.set({questions: arr, reBuildQuestions: false});
 			// this.set({questions: arr.slice(0, questionLen), reBuildQuestions: false});
 		},
-		getQuestion(question) {
+		getQuestion: function(question) {
 			var {layerID} = this.get();
 
 			this.question = null;
@@ -297,7 +297,7 @@ var app = (function () {
 			this._clearLayers();
 			this.map.setZoom(gameZoom);
 		},
-		getLayerGame(layerID) {
+		getLayerGame: function(layerID) {
 			var url = serverBase + 'rest/ver1/layers/' + layerID + '/search?apikey=' + apikey + '&columns=[{%22Value%22:%22[gmx_id]%22},{%22Value%22:%22[TITLE]%22},{%22Value%22:%22SECTION%22}]';
 			fetch(url, {mode: 'cors'})
 				.then(function(resp) { return resp.json(); })
@@ -305,7 +305,7 @@ var app = (function () {
 					this.allData = json.features;
 				}.bind(this));
 		},
-		showQuestionResult() {
+		showQuestionResult: function() {
 			// if (this.polyline) { this.map.removeLayer(this.polyline); }
 			var {emotions} = this.get(),
 				item = this.question,
@@ -355,7 +355,7 @@ var app = (function () {
 			resultQuestion.strLen = isContains ? '0' : strLen;
 			this.set({resultQuestion: resultQuestion, emotion: emotion});
 		},
-		clickMap(ev) {
+		clickMap: function(ev) {
 			if (this.marker) {
 				this.map.removeLayer(this.marker);
 			}
@@ -364,7 +364,7 @@ var app = (function () {
 			
 			this.set({point: true});
 		},
-		audioStart(start, duration) {
+		audioStart: function(start, duration) {
 			if (this.sound) {
 				var audioCtx = new (window.AudioContext || window.webkitAudioContext)(),
 					source = audioCtx.createBufferSource(),
@@ -385,12 +385,12 @@ var app = (function () {
 				request.send();
 			}
 		},
-		_clearLayers() {
+		_clearLayers: function() {
 			if (this.marker) { this.map.removeLayer(this.marker); this.marker = null; }
 			if (this.polyline) { this.map.removeLayer(this.polyline); this.polyline = null; }
 			if (this.currentLayer) { this.map.removeLayer(this.currentLayer); this.currentLayer = null; }
 		},
-		createMap(it) {
+		createMap: function(it) {
 			var state = it.state || {},
 				mapID = it.mapID || 'A557835E1B2344479C092FBB0158B529',
 				layerID = it.layerID || 'F9728D94848F4163A19DF5B5A6BFDDF1', //'5F2A707A119A45EF9BD490187E909830',
