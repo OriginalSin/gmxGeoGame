@@ -570,7 +570,8 @@ var app = (function () {
 	var methods$1 = {
 		checkSection(key, flag) {
 			// console.log('checkSection', key, flag);
-			var {sectionsList} = this.get();
+			var ph = this.get(),
+			    sectionsList = ph.sectionsList;
 			sectionsList[key] = flag;
 			this.set({sectionsList: sectionsList});
 		},
@@ -580,7 +581,10 @@ var app = (function () {
 			this.nextQuestion(0, true);
 		},
 		nextQuestion(sc, clearCurrentScore) {
-			var {questions, props, score, currentScore} = this.get(),
+			var ph = this.get(),
+			    questions = ph.questions,
+			    //props, score, 
+			    currentScore = ph.currentScore,
 				question = questions.shift();
 			if (clearCurrentScore) { currentScore = []; }
 			this.set({questions: questions, question: question, point: false, calc: false, resultQuestion: false, currentScore: currentScore});
