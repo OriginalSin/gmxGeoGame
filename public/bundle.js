@@ -15,7 +15,7 @@ var app = (function () {
 
 	function addLoc(element, file, line, column, char) {
 		element.__svelte_meta = {
-			loc: { file, line, column, char }
+			loc: { file: file, line: line, column: column, char:char }
 		};
 	}
 
@@ -256,7 +256,8 @@ var app = (function () {
 		reBuildQuestions(sectionsList) {
 			var arr = [],
 				sectionsKeyArr = Object.keys(sectionsList),
-				sectionsLen = sectionsKeyArr.length;
+				sectionsLen = sectionsKeyArr.length;
+
 			for(var i = 0; i < questionLen; i++) {
 				var key = sectionsKeyArr[Math.floor(sectionsLen * Math.random())],
 					arr1 = sectionsList[key],
