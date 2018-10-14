@@ -65,7 +65,7 @@
 
 				this.question = null;
 				var query = 'gmx_id=' + question.properties.gmx_id,
-					url = serverBase + 'rest/ver1/layers/' + layerID + '/search?apikey=' + apikey + '&query=' + query;
+					url = serverBase + 'rest/ver1/layers/' + layerID + '/search?sw=1&apikey=' + apikey + '&query=' + query;
 				fetch(url, {mode: 'cors'})
 					.then(function(resp) { return resp.json(); })
 					.then(function(json) {
@@ -190,7 +190,7 @@
 						maxNativeZoom: 18,
 						maxZoom: 21
 					}) :
-					L.tileLayer('//maps.kosmosnimki.ru/TileSender.ashx?ModeKey=tile&ftc=osm&srs=3857&z={z}&x={x}&y={y}&LayerName=C9458F2DCB754CEEACC54216C7D1EB0A&apiKey=' + apiKey, {
+					L.tileLayer('//maps.kosmosnimki.ru/TileSender.ashx?sw=1&ModeKey=tile&ftc=osm&srs=3857&z={z}&x={x}&y={y}&LayerName=C9458F2DCB754CEEACC54216C7D1EB0A&apiKey=' + apiKey, {
 						maxNativeZoom: 18,
 						maxZoom: 21
 					});
