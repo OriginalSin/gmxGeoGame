@@ -39,7 +39,8 @@ export default {
 
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify
-		production && buble({ include: ['src/**', 'node_modules/svelte/shared.js'] }),
-		production && terser()
+		production && buble({ include: ['src/**', 'node_modules/svelte/shared.js'] })
+		// ,
+		// production && terser()
 	]
 };
