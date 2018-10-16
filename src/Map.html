@@ -66,7 +66,7 @@
 				this.question = null;
 				var query = 'gmx_id=' + question.properties.gmx_id,
 					url = serverBase + 'rest/ver1/layers/' + layerID + '/search?sw=1&apikey=' + apikey + '&query=' + query;
-				fetch(url, {mode: 'cors'})
+				fetch(url, {mode: 'cors', credentials: 'include'})
 					.then(function(resp) { return resp.json(); })
 					.then(function(json) {
 						this.question = json.features[0];
@@ -81,7 +81,7 @@
 			},
 			getLayerGame(layerID) {
 				var url = serverBase + 'rest/ver1/layers/' + layerID + '/search?apikey=' + apikey + '&columns=[{%22Value%22:%22[gmx_id]%22},{%22Value%22:%22[TITLE]%22},{%22Value%22:%22SECTION%22}]';
-				fetch(url, {mode: 'cors'})
+				fetch(url, {mode: 'cors', credentials: 'include'})
 					.then(function(resp) { return resp.json(); })
 					.then(function(json) {
 						this.allData = json.features;
@@ -149,24 +149,20 @@
 			},
 			audioStart(start, duration) {
 				if (this.sound) {
-					var audioCtx = new (window.AudioContext || window.webkitAudioContext)(),
-						source = audioCtx.createBufferSource(),
-						request = new XMLHttpRequest();
-					request.open('GET', 'mp3/audio.mp3', true);
-					request.responseType = 'arraybuffer';
-					request.onload = function() {
-						var audioData = request.response;
-						audioCtx.decodeAudioData(request.response, function(buffer) {
-							source.buffer = buffer;
-							source.start(audioCtx.currentTime + 1, start, duration);
-							source.connect(audioCtx.destination);
-							// source.loop = true;
-						  },
-
-						  function(e){ console.log("Error with decoding audio data" + e.err); }
-						);
-					}
-					request.send();
+					fetch('mp3/audio.mp3', { mode: 'cors', credentials: 'include' })
+						.then(response => response.arrayBuffer())
+						.then(function(buf) {
+							var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+							audioCtx.decodeAudioData(buf, function(buffer) {
+								var source = audioCtx.createBufferSource();
+								source.buffer = buffer;
+								source.start(audioCtx.currentTime + 1, start, duration);
+								source.connect(audioCtx.destination);
+								// source.loop = true;
+							  },
+							  function(e){ console.log("Error with decoding audio data" + e.err); }
+							);
+						}.bind(this));
 				}
 			},
 			_clearLayers() {
@@ -182,7 +178,7 @@
 					apiKey = it.apiKey || apikey,
 					pos = state.map ? state.map.position : {};
 
-				this.sound = it.sound;
+				this.sound = it.sound && (window.AudioContext || window.webkitAudioContext);
 
 				var osm = it.base == 1 ? 
 					L.tileLayer('//tilessputnik.ru/{z}/{x}/{y}.png', {
