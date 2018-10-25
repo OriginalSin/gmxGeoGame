@@ -231,7 +231,8 @@ var app = (function () {
 	}
 	var methods = {
 		getSections: function getSections(arr) {
-			var sections = {};
+			var sections = {},
+				sectionsFlags = {};
 			arr.forEach(function(it) {
 				var key = it.properties.SECTION;
 				if (!sections[key]) { sections[key] = []; }			sections[key].push(it);
@@ -243,8 +244,9 @@ var app = (function () {
 			for(var i = 0, len1 = len > sectionsLen ? sectionsLen : len; i < len1; i++) {
 				var key = arrSections[i];
 				sections1[key] = sections[key];
+				sectionsFlags[key] = true;
 			}
-			this.set({sectionsList: sections1});
+			this.set({sectionsList: sections1, sectionsFlags: sectionsFlags});
 		},
 		reBuildQuestions: function reBuildQuestions(sectionsList) {
 			var arr = [],
@@ -424,7 +426,7 @@ var app = (function () {
 		var current = ref.current;
 		var previous = ref.previous;
 
-		// console.log('in onstate', this);
+		console.log('in onstate', changed, current, previous);
 		if (changed.selectQuiz && current.selectQuiz) {
 			this._clearLayers();
 			this.set({quizList: this.quizList});
@@ -522,8 +524,10 @@ var app = (function () {
 	function data$1() {
 		return {
 			quizList: [],
+			layerGame: null,
 			selectQuiz: null,
 			sectionsList: {},
+			sectionsFlags: {},
 			layerID: '',
 			questions: false,
 			question: false,
@@ -539,13 +543,15 @@ var app = (function () {
 	}
 	var methods$1 = {
 		checkSection: function checkSection(key, flag) {
-			// console.log('checkSection', key, flag);
+			console.log('checkSection', key, flag);
 			var ref = this.get();
 			var sectionsList = ref.sectionsList;
-			sectionsList[key] = flag;
-			this.set({sectionsList: sectionsList});
+			var sectionsFlags = ref.sectionsFlags;
+			sectionsFlags[key] = flag;
+			this.set({sectionsFlags: sectionsFlags});
 		},
 		start: function start() {
+		console.log('start');
 			this.set({reBuildQuestions: true, quizList: null, layerID: 'F9728D94848F4163A19DF5B5A6BFDDF1'});
 			this.nextQuestion(0, true);
 		},
@@ -567,7 +573,7 @@ var app = (function () {
 		var current = ref.current;
 		var previous = ref.previous;
 
-		// console.log('in onstate', this);
+		console.log('in app onstate', changed, current, previous);
 		if (changed.resultQuestion && current.resultQuestion) {
 			var ref$1 = this.get();
 			var currentScore = ref$1.currentScore;
@@ -590,6 +596,12 @@ var app = (function () {
 			map_initial_data.sectionsList = ctx.sectionsList
 		;
 			map_updating.sectionsList = true;
+		}
+		if (ctx.sectionsFlags
+		 !== void 0) {
+			map_initial_data.sectionsFlags = ctx.sectionsFlags
+		;
+			map_updating.sectionsFlags = true;
 		}
 		if (ctx.quizList
 		 !== void 0) {
@@ -677,6 +689,10 @@ var app = (function () {
 					newState.sectionsList = childState.sectionsList;
 				}
 
+				if (!map_updating.sectionsFlags && changed.sectionsFlags) {
+					newState.sectionsFlags = childState.sectionsFlags;
+				}
+
 				if (!map_updating.quizList && changed.quizList) {
 					newState.quizList = childState.quizList;
 				}
@@ -730,7 +746,7 @@ var app = (function () {
 		});
 
 		component.root._beforecreate.push(function () {
-			map._bind({ selectQuiz: 1, sectionsList: 1, quizList: 1, layerID: 1, layerGame: 1, score: 1, questions: 1, question: 1, point: 1, calc: 1, emotion: 1, emotions: 1, resultQuestion: 1, reBuildQuestions: 1 }, map.get());
+			map._bind({ selectQuiz: 1, sectionsList: 1, sectionsFlags: 1, quizList: 1, layerID: 1, layerGame: 1, score: 1, questions: 1, question: 1, point: 1, calc: 1, emotion: 1, emotions: 1, resultQuestion: 1, reBuildQuestions: 1 }, map.get());
 		});
 
 		var if_block = (!ctx.question) && create_if_block(component, ctx);
@@ -791,6 +807,12 @@ var app = (function () {
 					map_changes.sectionsList = ctx.sectionsList
 		;
 					map_updating.sectionsList = ctx.sectionsList
+		 !== void 0;
+				}
+				if (!map_updating.sectionsFlags && changed.sectionsFlags) {
+					map_changes.sectionsFlags = ctx.sectionsFlags
+		;
+					map_updating.sectionsFlags = ctx.sectionsFlags
 		 !== void 0;
 				}
 				if (!map_updating.quizList && changed.quizList) {
@@ -933,7 +955,7 @@ var app = (function () {
 		};
 	}
 
-	// (17:0) {#if !question}
+	// (18:0) {#if !question}
 	function create_if_block(component, ctx) {
 		var div;
 
@@ -955,7 +977,7 @@ var app = (function () {
 		};
 	}
 
-	// (22:1) {#if question}
+	// (23:1) {#if question}
 	function create_if_block_1(component, ctx) {
 		var button;
 
@@ -992,7 +1014,7 @@ var app = (function () {
 		};
 	}
 
-	// (32:2) {#if !isSectionsEmpty}
+	// (33:2) {#if !isSectionsEmpty}
 	function create_if_block_3(component, ctx) {
 		var button;
 
@@ -1029,7 +1051,7 @@ var app = (function () {
 		};
 	}
 
-	// (43:4) {#if questions && questions.length}
+	// (44:4) {#if questions && questions.length}
 	function create_if_block_6(component, ctx) {
 		var button;
 
@@ -1061,7 +1083,7 @@ var app = (function () {
 		};
 	}
 
-	// (45:4) {:else}
+	// (46:4) {:else}
 	function create_if_block_7(component, ctx) {
 		var div, text, span, text_1;
 
@@ -1096,7 +1118,7 @@ var app = (function () {
 		};
 	}
 
-	// (53:5) {#each currentScore as it}
+	// (54:5) {#each currentScore as it}
 	function create_each_block(component, ctx) {
 		var li, text_value = ctx.it.question.properties.TITLE, text, text_1, b, text_2_value = ctx.it.strLen, text_2;
 
@@ -1136,7 +1158,7 @@ var app = (function () {
 		};
 	}
 
-	// (38:3) {#if resultQuestion}
+	// (39:3) {#if resultQuestion}
 	function create_if_block_5(component, ctx) {
 		var div, span, text_value = ctx.emotion.title, text, text_1, span_1, text_2_value = ctx.emotion.score, text_2, text_4, text_5, hr, text_6, div_1, ul, text_8, hr_1, text_9, text_10;
 
@@ -1279,7 +1301,7 @@ var app = (function () {
 		};
 	}
 
-	// (61:1) {#if point}
+	// (62:1) {#if point}
 	function create_if_block_8(component, ctx) {
 		var p, text_1, button;
 
@@ -1319,7 +1341,7 @@ var app = (function () {
 		};
 	}
 
-	// (64:1) {:else}
+	// (65:1) {:else}
 	function create_if_block_9(component, ctx) {
 		var p;
 
@@ -1344,7 +1366,7 @@ var app = (function () {
 		};
 	}
 
-	// (78:3) {#each Object.keys(sectionsList) as it}
+	// (79:3) {#each Object.keys(sectionsList) as it}
 	function create_each_block_1(component, ctx) {
 		var li, input, text_value = ctx.it, text;
 
@@ -1384,7 +1406,7 @@ var app = (function () {
 		};
 	}
 
-	// (75:2) {#if sectionsList}
+	// (76:2) {#if sectionsList}
 	function create_if_block_12(component, ctx) {
 		var h1, text_1, ul, text_3, button;
 
@@ -1480,7 +1502,7 @@ var app = (function () {
 		};
 	}
 
-	// (83:2) {:else}
+	// (84:2) {:else}
 	function create_if_block_13(component, ctx) {
 		var div;
 
@@ -1505,7 +1527,7 @@ var app = (function () {
 		};
 	}
 
-	// (27:0) {#if quizList}
+	// (28:0) {#if quizList}
 	function create_if_block_2(component, ctx) {
 		var h1, text_1, p, text_3, if_block_anchor;
 
@@ -1564,7 +1586,7 @@ var app = (function () {
 		};
 	}
 
-	// (35:18) 
+	// (36:18) 
 	function create_if_block_4(component, ctx) {
 		var div, text_value = ctx.question ? ctx.question.properties.TITLE + ' (' + ctx.question.properties.SECTION + ')' : '', text, text_1;
 
@@ -1618,7 +1640,7 @@ var app = (function () {
 		};
 	}
 
-	// (69:18) 
+	// (70:18) 
 	function create_if_block_10(component, ctx) {
 		var div;
 
@@ -1643,7 +1665,7 @@ var app = (function () {
 		};
 	}
 
-	// (73:0) {:else}
+	// (74:0) {:else}
 	function create_if_block_11(component, ctx) {
 		var div;
 
