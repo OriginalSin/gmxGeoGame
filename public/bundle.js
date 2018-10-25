@@ -248,10 +248,13 @@ var app = (function () {
 			}
 			this.set({sectionsList: sections1, sectionsFlags: sectionsFlags});
 		},
-		reBuildQuestions: function reBuildQuestions(sectionsList) {
+		reBuildQuestions: function reBuildQuestions(sectionsList, sectionsFlags) {
 			var arr = [],
-				sectionsKeyArr = Object.keys(sectionsList),
-				sectionsLen = sectionsKeyArr.length;
+				sectionsKeyArr = [];
+
+			for(var key in sectionsFlags) { if(sectionsFlags[key]) { sectionsKeyArr.push(key); } }
+
+			var sectionsLen = sectionsKeyArr.length;
 			for(var i = 0; i < questionLen; i++) {
 				var key = sectionsKeyArr[Math.floor(sectionsLen * Math.random())],
 					arr1 = sectionsList[key],
@@ -426,7 +429,7 @@ var app = (function () {
 		var current = ref.current;
 		var previous = ref.previous;
 
-		console.log('in onstate', changed, current, previous);
+		// console.log('in onstate', changed, current, previous);
 		if (changed.selectQuiz && current.selectQuiz) {
 			this._clearLayers();
 			this.set({quizList: this.quizList});
@@ -435,7 +438,7 @@ var app = (function () {
 		} else if (changed.question && current.question) {
 			this.getQuestion(current.question);
 		} else if (current.reBuildQuestions) {
-			this.reBuildQuestions(current.sectionsList);
+			this.reBuildQuestions(current.sectionsList, current.sectionsFlags);
 		} else if (changed.calc && current.calc) {
 			if (this.question) {
 				this.showQuestionResult();
@@ -543,7 +546,7 @@ var app = (function () {
 	}
 	var methods$1 = {
 		checkSection: function checkSection(key, flag) {
-			console.log('checkSection', key, flag);
+			// console.log('checkSection', key, flag);
 			var ref = this.get();
 			var sectionsList = ref.sectionsList;
 			var sectionsFlags = ref.sectionsFlags;
@@ -551,7 +554,7 @@ var app = (function () {
 			this.set({sectionsFlags: sectionsFlags});
 		},
 		start: function start() {
-		console.log('start');
+			// console.log('start');
 			this.set({reBuildQuestions: true, quizList: null, layerID: 'F9728D94848F4163A19DF5B5A6BFDDF1'});
 			this.nextQuestion(0, true);
 		},
@@ -573,7 +576,7 @@ var app = (function () {
 		var current = ref.current;
 		var previous = ref.previous;
 
-		console.log('in app onstate', changed, current, previous);
+		// console.log('in app onstate', changed, current, previous);
 		if (changed.resultQuestion && current.resultQuestion) {
 			var ref$1 = this.get();
 			var currentScore = ref$1.currentScore;

@@ -48,11 +48,14 @@
 				}
 				this.set({sectionsList: sections1, sectionsFlags: sectionsFlags});
 			},
-			reBuildQuestions(sectionsList) {
+			reBuildQuestions(sectionsList, sectionsFlags) {
 				var arr = [],
 					sarr = [],
-					sectionsKeyArr = Object.keys(sectionsList),
-					sectionsLen = sectionsKeyArr.length,
+					sectionsKeyArr = [];
+
+				for(var key in sectionsFlags) { if(sectionsFlags[key]) { sectionsKeyArr.push(key); } }
+
+				var	sectionsLen = sectionsKeyArr.length,
 					ids = {};
 				for(var i = 0; i < questionLen; i++) {
 					var key = sectionsKeyArr[Math.floor(sectionsLen * Math.random())],
@@ -222,7 +225,7 @@
 		},
 
 		onstate({ changed, current, previous }) {
-			console.log('in onstate', changed, current, previous);
+			// console.log('in onstate', changed, current, previous);
 			if (changed.selectQuiz && current.selectQuiz) {
 				this._clearLayers();
 				this.set({quizList: this.quizList});
@@ -231,7 +234,7 @@
 			} else if (changed.question && current.question) {
 				this.getQuestion(current.question);
 			} else if (current.reBuildQuestions) {
-				this.reBuildQuestions(current.sectionsList);
+				this.reBuildQuestions(current.sectionsList, current.sectionsFlags);
 			} else if (changed.calc && current.calc) {
 				if (this.question) {
 					this.showQuestionResult();

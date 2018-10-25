@@ -118,13 +118,13 @@
 		},
 		methods: {
 			checkSection(key, flag) {
-				console.log('checkSection', key, flag);
+				// console.log('checkSection', key, flag);
 				var {sectionsList, sectionsFlags} = this.get();
 				sectionsFlags[key] = flag;
 				this.set({sectionsFlags: sectionsFlags});
 			},
 			start() {
-			console.log('start');
+				// console.log('start');
 				this.set({reBuildQuestions: true, quizList: null, layerID: 'F9728D94848F4163A19DF5B5A6BFDDF1'})
 				this.nextQuestion(0, true);
 			},
@@ -142,7 +142,7 @@
 		},
 
 		onstate({ changed, current, previous }) {
-			console.log('in app onstate', changed, current, previous);
+			// console.log('in app onstate', changed, current, previous);
 			if (changed.resultQuestion && current.resultQuestion) {
 				var {currentScore} = this.get();
 				currentScore.push(current.resultQuestion);
